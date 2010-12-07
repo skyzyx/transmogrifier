@@ -66,7 +66,7 @@ class DOM
   public static function arrayToXMLString(array $source, $rootTagName = 'root', $formatOutput = true)
   {
     $document = self::arrayToDOMDocument($source, $rootTagName);
-    $document->formatOutput = true;
+    $document->formatOutput = $formatOutput;
     return $document->saveXML();
   }
 
