@@ -73,7 +73,12 @@ class DOM
   private static function createDOMElement($source, $tagName, DOMDocument $document)
   {
     if (!is_array($source))
-      return $document->createElement($tagName, $source);
+	{
+      $element = $document->createElement($tagName);
+      $element->appendChild($document->createCDATASection($source));
+
+      return $element;
+    }
 
     $element = $document->createElement($tagName);
 
