@@ -8,6 +8,7 @@ class DOM
    * @param array $source
    * This source array:
    *
+   * <code>
    * Array
    * (
    *   [book] => Array
@@ -17,6 +18,10 @@ class DOM
    *           [author] => Author0
    *           [title] => Title0
    *           [publisher] => Publisher0
+   *           [__attributes__] => Array
+   *             (
+   *               [isbn] => 978-3-16-148410-0
+   *             )
    *         )
    *       [1] => Array
    *         (
@@ -30,11 +35,13 @@ class DOM
    *         )
    *     )
    * )
+   * </code>
    *
    * will produce this XML:
    *
+   * <code>
    * <root>
-   *   <book>
+   *   <book isbn="978-3-16-148410-0">
    *     <author>Author0</author>
    *     <title>Title0</title>
    *     <publisher>Publisher0</publisher>
@@ -46,6 +53,7 @@ class DOM
    *     <publisher>Publisher1</publisher>
    *   </book>
    * </root>
+   * </code>
    * @param string $rootTagName
    * @return DOMDocument
    */
@@ -67,6 +75,7 @@ class DOM
   {
     $document = self::arrayToDOMDocument($source, $rootTagName);
     $document->formatOutput = $formatOutput;
+
     return $document->saveXML();
   }
 
@@ -84,11 +93,15 @@ class DOM
 
     foreach ($source as $key => $value)
       if (is_string($key))
-        foreach ((is_array($value) ? $value : array($value)) as $elementKey => $elementValue)
-          $element->appendChild(self::createDOMElement($elementValue, $key, $document));
+        if ($key == '__attributes__')
+          foreach ($value as $attributeName => $attributeValue)
+            $element->setAttribute($attributeName, $attributeValue);
+        else
+          foreach ((is_array($value) ? $value : array($value)) as $elementKey => $elementValue)
+            $element->appendChild(self::createDOMElement($elementValue, $key, $document));
       else
         $element->appendChild(self::createDOMElement($value, $tagName, $document));
-      
+
     return $element;
   }
 }
