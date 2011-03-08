@@ -33,6 +33,14 @@ class DOM
    *           [title] => Title1
    *           [publisher] => Publisher1
    *         )
+   *       [2] => Array
+   *         (
+   *           [__attributes__] => Array
+   *             (
+   *               [isbn] => 978-3-16-148410-0
+   *             )
+   *           [__content__] => Title2
+   *         )
    *     )
    * )
    * </code>
@@ -52,6 +60,7 @@ class DOM
    *     <title>Title1</title>
    *     <publisher>Publisher1</publisher>
    *   </book>
+   *   <book isbn="978-3-16-148410-0">Title2</book>
    * </root>
    * </code>
    * @param string $rootTagName
@@ -96,6 +105,8 @@ class DOM
         if ($key == '__attributes__')
           foreach ($value as $attributeName => $attributeValue)
             $element->setAttribute($attributeName, $attributeValue);
+        else if ($key == '__content__')
+          $element->appendChild($document->createCDATASection($value));
         else
           foreach ((is_array($value) ? $value : array($value)) as $elementKey => $elementValue)
             $element->appendChild(self::createDOMElement($elementValue, $key, $document));
