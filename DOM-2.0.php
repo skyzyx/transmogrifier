@@ -1,71 +1,16 @@
 <?php
 /**
  * @author Omer Hassan
+ * @author Ryan Parman
+ * @license MIT
  */
-class DOM
+class Array2DOM
 {
   const ATTRIBUTES = '__attributes__';
   const CONTENT = '__content__';
 
   /**
    * @param array $source
-   * This source array:
-   *
-   * <code>
-   * Array
-   * (
-   *   [book] => Array
-   *     (
-   *       [0] => Array
-   *         (
-   *           [author] => Author0
-   *           [title] => Title0
-   *           [publisher] => Publisher0
-   *           [__attributes__] => Array
-   *             (
-   *               [isbn] => 978-3-16-148410-0
-   *             )
-   *         )
-   *       [1] => Array
-   *         (
-   *           [author] => Array
-   *             (
-   *               [0] => Author1
-   *               [1] => Author2
-   *             )
-   *           [title] => Title1
-   *           [publisher] => Publisher1
-   *         )
-   *       [2] => Array
-   *         (
-   *           [__attributes__] => Array
-   *             (
-   *               [isbn] => 978-3-16-148410-0
-   *             )
-   *           [__content__] => Title2
-   *         )
-   *     )
-   * )
-   * </code>
-   *
-   * will produce this XML:
-   *
-   * <code>
-   * <root>
-   *   <book isbn="978-3-16-148410-0">
-   *     <author>Author0</author>
-   *     <title>Title0</title>
-   *     <publisher>Publisher0</publisher>
-   *   </book>
-   *   <book>
-   *     <author>Author1</author>
-   *     <author>Author2</author>
-   *     <title>Title1</title>
-   *     <publisher>Publisher1</publisher>
-   *   </book>
-   *   <book isbn="978-3-16-148410-0">Title2</book>
-   * </root>
-   * </code>
    * @param string $rootTagName
    * @return DOMDocument
    */
@@ -107,7 +52,7 @@ class DOM
   public static function xmlStringToArray($xmlString)
   {
     $document = new DOMDocument();
-    
+
     return $document->loadXML($xmlString) ? self::domDocumentToArray($document) : array();
   }
 
@@ -130,17 +75,60 @@ class DOM
     $element = $document->createElement($tagName);
 
     foreach ($source as $key => $value)
-      if (is_string($key))
+    {
+      if (is_string($key) && !is_numeric($key))
+      {
         if ($key == self::ATTRIBUTES)
+        {
           foreach ($value as $attributeName => $attributeValue)
-            $element->setAttribute($attributeName, $attributeValue);
-        else if ($key == self::CONTENT)
+          {
+             $element->setAttribute($attributeName, $attributeValue);
+          }
+        }
+        elseif ($key === self::CONTENT)
+        {
           $element->appendChild($document->createCDATASection($value));
+        }
+        elseif (is_string($value) && !is_numeric($value))
+        {
+          $element->appendChild(self::createDOMElement($value, $key, $document));
+        }
+        elseif (is_array($value) && count($value))
+        {
+          $keyNode = $document->createElement($key);
+
+          foreach ($value as $elementKey => $elementValue)
+          {
+            if (is_string($elementKey) && !is_numeric($elementKey))
+            {
+              $keyNode->appendChild(self::createDOMElement($elementValue, $elementKey, $document));
+            }
+            else
+            {
+              $element->appendChild(self::createDOMElement($elementValue, $key, $document));
+            }
+          }
+
+          if ($keyNode->hasChildNodes())
+          {
+            $element->appendChild($keyNode);
+          }
+        }
         else
-          foreach ((is_array($value) ? $value : array($value)) as $elementKey => $elementValue)
-            $element->appendChild(self::createDOMElement($elementValue, $key, $document));
+        {
+          if (is_bool($value))
+          {
+            $value = $value ? 'true' : 'false';
+          }
+
+          $element->appendChild(self::createDOMElement((string) $value, $key, $document));
+        }
+      }
       else
+      {
         $element->appendChild(self::createDOMElement($value, $tagName, $document));
+      }
+    }
 
     return $element;
   }
@@ -162,20 +150,30 @@ class DOM
         $arrayElement = array();
 
         for ($attributeIndex = 0; !is_null($attribute = $item->attributes->item($attributeIndex)); $attributeIndex++)
+        {
           if ($attribute->nodeType == XML_ATTRIBUTE_NODE)
+          {
             $arrayElement[self::ATTRIBUTES][$attribute->nodeName] = $attribute->nodeValue;
+          }
+        }
 
         $children = self::createArray($item);
 
         if (is_array($children))
+        {
           $arrayElement = array_merge($arrayElement, $children);
+        }
         else
+        {
           $arrayElement[self::CONTENT] = $children;
+        }
 
         $array[$item->nodeName][] = $arrayElement;
       }
-      else if ($item->nodeType == XML_CDATA_SECTION_NODE || ($item->nodeType == XML_TEXT_NODE && trim($item->nodeValue) != ''))
+      elseif ($item->nodeType == XML_CDATA_SECTION_NODE || ($item->nodeType == XML_TEXT_NODE && trim($item->nodeValue) != ''))
+      {
         return $item->nodeValue;
+      }
     }
 
     return $array;
