@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright (c) 2011 Omer Hassan
- * Copyright (c) 2011-2012 Ryan Parman
+ * Copyright (c) 2012 Ryan Parman
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,178 +22,166 @@
  * THE SOFTWARE.
  */
 
-class Array2DOM
+namespace Skyzyx\Components
 {
-  const ATTRIBUTES = '__attributes__';
-  const CONTENT = '__content__';
+	use DOMDocument,
+	    DOMNode,
+	    SimpleXMLElement;
 
-  /**
-   * @param array $source
-   * @param string $rootTagName
-   * @return DOMDocument
-   */
-  public static function arrayToDOMDocument(array $source, $rootTagName = 'root')
-  {
-    $document = new DOMDocument();
-    $document->appendChild(self::createDOMElement($source, $rootTagName, $document));
+	class Transmogrifier
+	{
+		const ATTRIBUTES = '__attributes__';
+		const CONTENT = '__content__';
 
-    return $document;
-  }
+		/**
+		 * Stores the name of the classname to generate an XML object with. Class must be, or extend, <\DOMDocument>.
+		 */
+		public static $class;
 
-  /**
-   * @param array $source
-   * @param string $rootTagName
-   * @param bool $formatOutput
-   * @return string
-   */
-  public static function arrayToXMLString(array $source, $rootTagName = 'root', $formatOutput = true)
-  {
-    $document = self::arrayToDOMDocument($source, $rootTagName);
-    $document->formatOutput = $formatOutput;
+		/**
+		 * Converts an array into a DOMDocument-based XML object.
+		 *
+		 * @param array $source (Required) The array to convert into an XML object.
+		 * @param string $root (Optional) The tag to use as the root of the XML document. The default value is <code>root</code>.
+		 * @return DOMDocument An XML object.
+		 */
+		public static function array2dom(array $source, $root = 'root')
+		{
+			$document = new self::$class();
+			$document->appendChild(self::createDOMElement($source, $root, $document));
 
-    return $document->saveXML();
-  }
+			return $document;
+		}
 
-  /**
-   * @param DOMDocument $document
-   * @return array
-   */
-  public static function domDocumentToArray(DOMDocument $document)
-  {
-    return self::createArray($document->documentElement);
-  }
+		/**
+		 * Converts an array into an XML string.
+		 *
+		 * @param array $source (Required) The array to convert into an XML object.
+		 * @param string $root (Optional) The tag to use as the root of the XML document. The default value is <code>root</code>.
+		 * @param boolean $format (Optional) Whether or not to format the string. A value of <code>true</code> will pretty-print the string. A value of <code>false</code> will return the entire string on a single line. The default value is <code>true</code>.
+		 * @return string An XML document.
+		 */
+		public static function array2xml(array $source, $root = 'root', $format = true)
+		{
+			$document = self::array2dom($source, $root);
+			$document->formatOutput = $format;
 
-  /**
-   * @param string $xmlString
-   * @return array
-   */
-  public static function xmlStringToArray($xmlString)
-  {
-    $document = new DOMDocument();
+			return $document->saveXML();
+		}
 
-    return $document->loadXML($xmlString) ? self::domDocumentToArray($document) : array();
-  }
+		/**
+		 * Converts a DOMDocument-based XML object into an array.
+		 *
+		 * @param DOMDocument $document (Required) The DOMDocument XML object to convert into an array.
+		 * @return array An array representing the contents of the DOMDocument XML object.
+		 */
+		public static function dom2array(DOMDocument $document)
+		{
+			return self::create_array($document->documentElement);
+		}
 
-  /**
-   * @param mixed $source
-   * @param string $tagName
-   * @param DOMDocument $document
-   * @return DOMNode
-   */
-  private static function createDOMElement($source, $tagName, DOMDocument $document)
-  {
-    if (!is_array($source))
-    {
-      $element = $document->createElement($tagName);
-      $element->appendChild($document->createCDATASection($source));
+		/**
+		 * Converts an XML string into an array.
+		 *
+		 * @param string $xml (Required) The XML string to convert into an array.
+		 * @return array An array representing the contents of the XML string.
+		 */
+		public static function xml2array($xml)
+		{
+			$document = new self::$class();
 
-      return $element;
-    }
+			return $document->loadXML($xml) ? self::dom2array($document) : array();
+		}
 
-    $element = $document->createElement($tagName);
+		/**
+		 * Create a DOMDocument object from an array.
+		 *
+		 * @param mixed $source (Required) The source data to convert into a DOMDocument object.
+		 * @param string $tag_name (Required) The element name to use for this node in the DOMDocument object.
+		 * @param DOMDocument $document (Required) The DOMDocument object to work with.
+		 * @return DOMNode A DOMNode object which can be imported as a DOM fragment into a DOMDocument element.
+		 */
+		private static function createDOMElement($source, $tag_name, DOMDocument $document)
+		{
+			if (!is_array($source))
+			{
+				$element = $document->createElement($tag_name);
+				$element->appendChild($document->createCDATASection($source));
 
-    foreach ($source as $key => $value)
-    {
-      if (is_string($key) && !is_numeric($key))
-      {
-        if ($key == self::ATTRIBUTES)
-        {
-          foreach ($value as $attributeName => $attributeValue)
-          {
-             $element->setAttribute($attributeName, $attributeValue);
-          }
-        }
-        elseif ($key === self::CONTENT)
-        {
-          $element->appendChild($document->createCDATASection($value));
-        }
-        elseif (is_string($value) && !is_numeric($value))
-        {
-          $element->appendChild(self::createDOMElement($value, $key, $document));
-        }
-        elseif (is_array($value) && count($value))
-        {
-          $keyNode = $document->createElement($key);
+				return $element;
+			}
 
-          foreach ($value as $elementKey => $elementValue)
-          {
-            if (is_string($elementKey) && !is_numeric($elementKey))
-            {
-              $keyNode->appendChild(self::createDOMElement($elementValue, $elementKey, $document));
-            }
-            else
-            {
-              $element->appendChild(self::createDOMElement($elementValue, $key, $document));
-            }
-          }
+			$element = $document->createElement($tag_name);
 
-          if ($keyNode->hasChildNodes())
-          {
-            $element->appendChild($keyNode);
-          }
-        }
-        else
-        {
-          if (is_bool($value))
-          {
-            $value = $value ? 'true' : 'false';
-          }
+			foreach ($source as $key => $value)
+			{
+				if (is_string($key) && !is_numeric($key))
+				{
+					if ($key == self::ATTRIBUTES)
+					{
+						foreach ($value as $attributeName => $attributeValue)
+						{
+							$element->setAttribute($attributeName, $attributeValue);
+						}
+					}
+					elseif ($key === self::CONTENT)
+					{
+						$element->appendChild($document->createCDATASection($value));
+					}
+					elseif (is_string($value) && !is_numeric($value))
+					{
+						$element->appendChild(self::createDOMElement($value, $key, $document));
+					}
+					elseif (is_array($value) && count($value))
+					{
+						$keyNode = $document->createElement($key);
 
-          $element->appendChild(self::createDOMElement((string) $value, $key, $document));
-        }
-      }
-      else
-      {
-        $element->appendChild(self::createDOMElement($value, $tagName, $document));
-      }
-    }
+						foreach ($value as $elementKey => $elementValue)
+						{
+							if (is_string($elementKey) && !is_numeric($elementKey))
+							{
+								$keyNode->appendChild(self::createDOMElement($elementValue, $elementKey, $document));
+							}
+							else
+							{
+								$element->appendChild(self::createDOMElement($elementValue, $key, $document));
+							}
+						}
 
-    return $element;
-  }
+						if ($keyNode->hasChildNodes())
+						{
+							$element->appendChild($keyNode);
+						}
+					}
+					else
+					{
+						if (is_bool($value))
+						{
+							$value = $value ? 'true' : 'false';
+						}
 
-  /**
-   * @param DOMNode $domNode
-   * @return array
-   */
-  private static function createArray(DOMNode $domNode)
-  {
-    $array = array();
+						$element->appendChild(self::createDOMElement((string) $value, $key, $document));
+					}
+				}
+				else
+				{
+					$element->appendChild(self::createDOMElement($value, $tag_name, $document));
+				}
+			}
 
-    for ($i = 0; $i < $domNode->childNodes->length; $i++)
-    {
-      $item = $domNode->childNodes->item($i);
+			return $element;
+		}
 
-      if ($item->nodeType == XML_ELEMENT_NODE)
-      {
-        $arrayElement = array();
-
-        for ($attributeIndex = 0; !is_null($attribute = $item->attributes->item($attributeIndex)); $attributeIndex++)
-        {
-          if ($attribute->nodeType == XML_ATTRIBUTE_NODE)
-          {
-            $arrayElement[self::ATTRIBUTES][$attribute->nodeName] = $attribute->nodeValue;
-          }
-        }
-
-        $children = self::createArray($item);
-
-        if (is_array($children))
-        {
-          $arrayElement = array_merge($arrayElement, $children);
-        }
-        else
-        {
-          $arrayElement[self::CONTENT] = $children;
-        }
-
-        $array[$item->nodeName][] = $arrayElement;
-      }
-      elseif ($item->nodeType == XML_CDATA_SECTION_NODE || ($item->nodeType == XML_TEXT_NODE && trim($item->nodeValue) != ''))
-      {
-        return $item->nodeValue;
-      }
-    }
-
-    return $array;
-  }
+		/**
+		 * Converts a DOM node into an array.
+		 *
+		 * @param DOMNode $dom_node (Required) A DOMNode object to convert into an array.
+		 * @return array An array that represents the contents of the DOMNode object.
+		 */
+		private static function create_array(DOMNode $dom_node)
+		{
+			$sxe = simplexml_import_dom($dom_node);
+			return json_decode(json_encode($sxe), true);
+		}
+	}
 }
