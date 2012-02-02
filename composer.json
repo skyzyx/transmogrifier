@@ -1,0 +1,25 @@
+{
+	"name": "skyzyx/transmogrifier",
+	"type": "library",
+	"description": "Transmogrifies arrays into XML and vice-versa.",
+	"keywords": ["xml", "array", "dom"],
+	"homepage": "http://github.com/skyzyx/transmogrifier",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Ryan Parman",
+			"homepage": "http://ryanparman.com"
+		},
+		{
+			"name": "Omer Hassan",
+			"homepage": "https://code.google.com/u/113495690012051782542/"
+		},
+		{
+			"name": "Contributors",
+			"homepage": "https://github.com/amazonwebservices/aws-sdk-for-php/contributors"
+		}
+	],
+	"require": {
+		"php": ">=5.2",
+	}
+}

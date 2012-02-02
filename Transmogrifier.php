@@ -36,7 +36,7 @@ namespace Skyzyx\Components
 		/**
 		 * Stores the name of the classname to generate an XML object with. Class must be, or extend, <\DOMDocument>.
 		 */
-		public static $class;
+		public static $class = '\DOMDocument';
 
 		/**
 		 * Converts an array into a DOMDocument-based XML object.
