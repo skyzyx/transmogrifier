@@ -53,6 +53,18 @@ Which gives you the following:
 	  <book isbn="978-3-16-148410-0"><![CDATA[Title2]]></book>
 	</root>
 
+Check out the [tests](tree/master/tests) to get a sense of how it works.
+
+
+## Composer
+If you're using [Composer](https://github.com/composer/composer) to manage dependencies, you can add Transmogrifier with it.
+
+	{
+		"require": {
+			"skyzyx/transmogrifier": "*"
+		}
+	}
+
 
 ## Tests
 Tests are written in [PHPT](http://qa.php.net/phpt_details.php) format. You can run them with either the PEAR Test Runner or with PHPUnit 3.6+.
