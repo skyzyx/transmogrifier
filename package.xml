@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<package xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" packagerversion="1.4.10" version="2.0" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0        http://pear.php.net/dtd/tasks-1.0.xsd        http://pear.php.net/dtd/package-2.0        http://pear.php.net/dtd/package-2.0.xsd">
+  <name>Transmogrifier</name>
+  <channel>skyzyx.github.com</channel>
+  <summary>Transmogrifies arrays into XML and vice-versa.</summary>
+  <description>Transmogrifies arrays into XML and vice-versa.</description>
+  <lead>
+    <name>Ryan Parman</name>
+    <user/>
+    <email>ryan@ryanparman.com</email>
+    <active>yes</active>
+  </lead>
+  <date>2012-02-08</date>
+  <time>09:23:29</time>
+  <version>
+    <release>1.0.0</release>
+    <api>1.0.0</api>
+  </version>
+  <stability>
+    <release>stable</release>
+    <api>stable</api>
+  </stability>
+  <license>MIT</license>
+  <notes>-</notes>
+  <contents>
+    <dir name="/">
+      <file name="tests/books.phpt" role="test" md5sum="8dc79b109ad1374e7301e070008ae2a4"/>
+      <file name="tests/different_root_nodes.phpt" role="test" md5sum="c239837453c1b0a56502e15c23b75296"/>
+      <file name="tests/same_root_nodes.phpt" role="test" md5sum="1f995763d6375c3704654900d60bab06"/>
+      <file name="tests/simple.phpt" role="test" md5sum="b464fd98de80abde8bc6c20917faea22"/>
+    </dir>
+  </contents>
+  <dependencies>
+    <required>
+      <php>
+        <min>5.3</min>
+      </php>
+      <pearinstaller>
+        <min>1.4.0</min>
+      </pearinstaller>
+    </required>
+  </dependencies>
+  <phprelease>
+    <filelist>
+      <install name="tests/books.phpt" as="books.phpt"/>
+      <install name="tests/different_root_nodes.phpt" as="different_root_nodes.phpt"/>
+      <install name="tests/same_root_nodes.phpt" as="same_root_nodes.phpt"/>
+      <install name="tests/simple.phpt" as="simple.phpt"/>
+    </filelist>
+  </phprelease>
+</package>
