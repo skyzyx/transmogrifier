@@ -3,7 +3,7 @@ Use multiple nodes with different names as children of <root>.
 
 --FILE--
 <?php
-require_once dirname(__DIR__) . '/Transmogrifier.php';
+require_once dirname(__DIR__) . '/src/Skyzyx/Components/Transmogrifier.php';
 
 use Skyzyx\Components\Transmogrifier;
 
