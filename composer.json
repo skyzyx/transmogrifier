@@ -16,10 +16,15 @@
 		},
 		{
 			"name": "Contributors",
-			"homepage": "https://github.com/amazonwebservices/aws-sdk-for-php/contributors"
+			"homepage": "https://github.com/skyzyx/skyzyx/contributors"
 		}
 	],
 	"require": {
 		"php": ">=5.3"
+	},
+	"autoload": {
+		"psr-0": {
+			"Skyzyx\\Components\\Transmogrifier": "src/Transmogrifier.php"
+		}
 	}
 }
