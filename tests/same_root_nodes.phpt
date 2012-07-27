@@ -3,7 +3,7 @@ Use multiple nodes with identical names as children of <root>.
 
 --FILE--
 <?php
-require_once dirname(__DIR__) . '/Transmogrifier.php';
+require_once '../src/Skyzyx/Components/Transmogrifier.php';
 
 use Skyzyx\Components\Transmogrifier;
 
@@ -20,7 +20,7 @@ $data = array(
 	)
 );
 
-echo Transmogrifier::array2xml($data);
+echo Transmogrifier::to_xml($data);
 ?>
 
 --EXPECT--
