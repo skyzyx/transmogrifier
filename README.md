@@ -12,7 +12,6 @@ The following software is **required** for Transmogrifier to run:
 ## Examples
 Here's how you use it:
 
-	require_once 'Transmogrifier.php';
 	use Skyzyx\Components\Transmogrifier;
 
 	$data = array(
