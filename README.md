@@ -12,7 +12,7 @@ The following software is **required** for Transmogrifier to run:
 ## Examples
 Here's how you use it:
 
-	use Skyzyx\Components\Transmogrifier;
+	use Transmogrifier\Transmogrifier;
 
 	$data = array(
 		'book' => array(
@@ -38,7 +38,7 @@ Here's how you use it:
 		)
 	);
 
-	echo Transmogrifier::to_xml($data);
+	echo Transmogrifier::toXML($data);
 
 Which gives you the following:
 

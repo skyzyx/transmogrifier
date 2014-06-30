@@ -5,7 +5,7 @@ Array of hashes where hashes are strings.
 <?php
 require_once '../src/Skyzyx/Components/Transmogrifier.php';
 
-use Skyzyx\Components\Transmogrifier;
+use Transmogrifier\Transmogrifier;
 
 $data = json_decode('{
   "ConsumedCapacityUnits": 0.5,
@@ -29,7 +29,7 @@ $data = json_decode('{
   "ScannedCount": 2
 }', true);
 
-echo Transmogrifier::to_xml($data);
+echo Transmogrifier::toXML($data);
 ?>
 
 --EXPECT--

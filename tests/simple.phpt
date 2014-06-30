@@ -5,11 +5,11 @@ Use multiple nodes with identical names as children of <root>.
 <?php
 require_once '../src/Skyzyx/Components/Transmogrifier.php';
 
-use Skyzyx\Components\Transmogrifier;
+use Transmogrifier\Transmogrifier;
 
 $data = json_decode('{"count":1,"truncated":false}', true);
 
-echo Transmogrifier::to_xml($data);
+echo Transmogrifier::toXML($data);
 ?>
 
 --EXPECT--

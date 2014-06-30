@@ -5,11 +5,11 @@ Empty nodes in the JSON document (outer).
 <?php
 require_once '../src/Skyzyx/Components/Transmogrifier.php';
 
-use Skyzyx\Components\Transmogrifier;
+use Transmogrifier\Transmogrifier;
 
 $data = json_decode('{"data1":[],"data2":{}}', true);
 
-echo Transmogrifier::to_xml($data);
+echo Transmogrifier::toXML($data);
 ?>
 
 --EXPECT--

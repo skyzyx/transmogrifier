@@ -5,7 +5,7 @@ Encode NULL bytes in XML strings.
 <?php
 require_once '../src/Skyzyx/Components/Transmogrifier.php';
 
-use Skyzyx\Components\Transmogrifier;
+use Transmogrifier\Transmogrifier;
 
 class Dummy
 {
@@ -19,7 +19,7 @@ $data = array(
 	'dummy' => $serialized_dummy
 );
 
-echo Transmogrifier::to_xml($data);
+echo Transmogrifier::toXML($data);
 ?>
 
 --EXPECT--

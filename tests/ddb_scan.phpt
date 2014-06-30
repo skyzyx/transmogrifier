@@ -5,7 +5,7 @@ Test a sample response from DynamoDB.
 <?php
 require_once '../src/Skyzyx/Components/Transmogrifier.php';
 
-use Skyzyx\Components\Transmogrifier;
+use Transmogrifier\Transmogrifier;
 
 $data = array(
 	'ConsumedCapacityUnits' => 0.5,
@@ -32,7 +32,7 @@ $data = array(
 	'ScannedCount' => 12,
 );
 
-echo Transmogrifier::to_xml($data);
+echo Transmogrifier::toXML($data);
 ?>
 
 --EXPECT--

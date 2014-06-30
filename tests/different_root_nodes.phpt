@@ -5,7 +5,7 @@ Use multiple nodes with different names as children of <root>.
 <?php
 require_once '../src/Skyzyx/Components/Transmogrifier.php';
 
-use Skyzyx\Components\Transmogrifier;
+use Transmogrifier\Transmogrifier;
 
 $data = array(
 	'configuration' => array(
@@ -17,7 +17,7 @@ $data = array(
 	)
 );
 
-echo Transmogrifier::to_xml($data);
+echo Transmogrifier::toXML($data);
 ?>
 
 --EXPECT--

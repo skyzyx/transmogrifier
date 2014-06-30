@@ -5,7 +5,7 @@ Create books XML from array.
 <?php
 require_once '../src/Skyzyx/Components/Transmogrifier.php';
 
-use Skyzyx\Components\Transmogrifier;
+use Transmogrifier\Transmogrifier;
 
 $data = array(
 	'book' => array(
@@ -31,7 +31,7 @@ $data = array(
 	)
 );
 
-echo Transmogrifier::to_xml($data);
+echo Transmogrifier::toXML($data);
 ?>
 
 --EXPECT--
