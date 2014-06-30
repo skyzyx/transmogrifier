@@ -9,12 +9,13 @@
 		{
 			"name": "Ryan Parman",
 			"homepage": "http://ryanparman.com"
-		},
-		{
-			"name": "Contributors",
-			"homepage": "https://github.com/amazonwebservices/aws-sdk-for-php/contributors"
 		}
 	],
+	"autoload": {
+		"psr-0": {
+			"Transmogrifier": "src"
+		}
+	},
 	"require": {
 		"php": ">=5.3.2"
 	}
