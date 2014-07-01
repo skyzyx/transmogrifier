@@ -62,7 +62,7 @@ class Transmogrifier
         $document = new DOMDocument();
 
         // Generate the document
-        $root = $document->createElement('root');
+        $root = $document->createElement($rootTagName);
         $root->appendChild(self::createDomElementFromArray($source, 'member', $document));
         $document->appendChild($root);
 
